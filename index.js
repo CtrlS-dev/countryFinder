@@ -26,13 +26,14 @@ const getCountries = async () => {
       all.classList.remove('load1')
     } 
   } catch (error) {
-   alert('VAYA!! ALGO HA SALIDO MAL CON EL SERVIDOR');
+    alert('VAYA!! ALGO HA SALIDO MAL AL INTENTAR CARGAR LOS PAÍSES');
   }}
-getCountries();
+  getCountries();
 
 // Api de temperatura
 const getWeather = async (lat, lon) => {
   try{
+    // diseño de preloader
     container.innerHTML = `
     <div class="centrado-weather">
         <div class="spinner-container">
@@ -54,7 +55,7 @@ const getWeather = async (lat, lon) => {
     const dataWeather = await apiWeather.json();
     return dataWeather;
   } catch(error){
-    alert('vaya, parece que hubo un error en los servidores');
+    alert('vaya, parece que hubo un error al cargar el clima');
   }
 };
 
@@ -66,27 +67,29 @@ searchInput.addEventListener('input', async e => {
   const countriesFilter = countries.filter(country => country.name.common.toLowerCase().startsWith(searchInput.value.toLowerCase()));
   // alerta "Describe mejor el nombre"
   const information = e.target.parentElement.children[1];
-  const information2= e.target.parentElement.children[2];
+  const information2 = e.target.parentElement.children[2];
   container.innerHTML = "";
   if (countriesFilter.length === 0) {
     container.innerHTML = " ";
     information.classList.remove('show-info');
     information2.classList.add('show-info2');
     contOne.innerHTML = ""
-}
+  }
   if (countriesFilter.length > 10) {
     container.innerHTML = "";
     information2.classList.remove('show-info2');
     information.classList.add('show-info');
-  } else if (countriesFilter.length <= 10){
-      // mensaje de error
+  }
+  if (countriesFilter.length > 1 && countriesFilter.length <= 10){
+      // elimino los mensajes de errores
       information.classList.remove('show-info');
       information2.classList.remove('show-info2');
-      for (let i = 0; i < countriesFilter.length; i++) {
+      // añado los elementos correspondientes
+      for (let numberCountry = 0; numberCountry < countriesFilter.length; numberCountry++) {
         container.innerHTML += `
         <div class='country'>
-        <img src='${countriesFilter[i].flags.svg}' class ='flags'>
-            <h1 class ='country-name'>${countriesFilter[i].name.common}</h1>
+        <img src='${countriesFilter[numberCountry].flags.svg}' class ='flags'>
+            <h1 class ='country-name'>${countriesFilter[numberCountry].name.common}</h1>
         </div>
         `;
       }
@@ -98,32 +101,28 @@ searchInput.addEventListener('input', async e => {
     container.classList.add('container-one');
     container.classList.remove('container');
     container.innerHTML = " ";
-    container.innerHTML = `
-        <div class="div-country">
-          <div class="country-only-one">
-            <img src='${countriesFilter[0].flags.svg}' class ="flags-only-one">
-            <h1 class="countryname-one">${countriesFilter[0].name.common}</h1>
-          </div>
-          <div class="div-weather">
-            <img class="weather-icon" src="https://openweathermap.org/img/wn/${weatherApi.weather[0].icon}@2x.png">
-            <p class="description-weather">${weatherApi.weather[0].description} |</p>
-            <p class="temp">${weatherApi.main.temp} C°</p>
-          </div>
+    container.innerHTML = ` 
+      <div class="div-country">
+        <div class="country-only-one">
+          <img src='${countriesFilter[0].flags.svg}' class ="flags-only-one">
+          <h1 class="countryname-one">${countriesFilter[0].name.common}</h1>
         </div>
+        <div class="div-weather">
+          <img class="weather-icon" src="https://openweathermap.org/img/wn/${weatherApi.weather[0].icon}@2x.png">
+          <p class="description-weather">${weatherApi.weather[0].description} |</p>
+          <p class="temp">${weatherApi.main.temp} C°</p>
+        </div>
+      </div>
         <div class="stats">
             <p class='capital'>🌐 Capital: ${countriesFilter[0].capital}</p>
-            <p class="poblacion">🌐 Poblacion: ${countriesFilter[0].population.toLocaleString()} Habitantes</p>
+            <p class="poblacion">🌐 Population: ${countriesFilter[0].population.toLocaleString()} Inhabitants</p>
             <p class="region">🌐 Region: ${countriesFilter[0].region}</p>
-            <p class="continente">🌐 Continente: ${countriesFilter[0].subregion}</p>
-            <p class="hora">🌐 Hora Local: ${countriesFilter[0].timezones[0]}</p>
-            </div>
+            <p class="continente">🌐 Sub Region: ${countriesFilter[0].subregion}</p>
+            <p class="hora">🌐 Time Zones: ${countriesFilter[0].timezones[0]}</p>
+        </div>
             `;
   } else{
     container.classList.remove('container-one');
     container.classList.add('container');
   };
 });
-
-
-        // 
-        // 
